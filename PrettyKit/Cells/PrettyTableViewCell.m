@@ -376,27 +376,39 @@ typedef enum {
     self.shadowOpacity = default_shadow_opacity;
 }
 
+- (void)commonInit {
+    [self.contentView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld context:nil];
+    
+    
+    PrettyTableViewCellBackground *bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
+                                                                                    behavior:CellBackgroundBehaviorNormal];
+    bg.cell = self;
+    self.backgroundView = bg;
+    [bg release];
+    
+    bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
+                                                     behavior:CellBackgroundBehaviorSelected];
+    bg.cell = self;
+    self.selectedBackgroundView = bg;
+    [bg release];
+    
+    [self initializeVars];
+}
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        [self commonInit];
+    }
+    return self;
+}
 
-        [self.contentView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld context:nil];
-
-        
-        PrettyTableViewCellBackground *bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame 
-                                                                                  behavior:CellBackgroundBehaviorNormal];
-        bg.cell = self;
-        self.backgroundView = bg;
-        [bg release];
-        
-        bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
-                                                      behavior:CellBackgroundBehaviorSelected];
-        bg.cell = self;
-        self.selectedBackgroundView = bg;
-        [bg release];
-        
-        [self initializeVars];
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self commonInit];
     }
     return self;
 }
