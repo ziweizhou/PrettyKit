@@ -45,6 +45,7 @@
 						  initWithBarButtonSystemItem:UIBarButtonSystemItemCompose 
 											   target:self 
 											   action:@selector(onComposeClick:)];
+    self.tableView.backgroundView = nil; 
     self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
 }
 

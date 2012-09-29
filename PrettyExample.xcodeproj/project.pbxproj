@@ -134,10 +134,10 @@
 			children = (
 				5735F8CA14FD2FFC00DD7370 /* AppDelegate.h */,
 				5735F8CB14FD2FFC00DD7370 /* AppDelegate.m */,
+				57360BDC14FF84F600343B7B /* MainWindow.xib */,
 				57A6337414FE7672004D2647 /* ExampleViewController.h */,
 				57A6337514FE7672004D2647 /* ExampleViewController.m */,
 				57360BDE14FF889B00343B7B /* ExampleViewController.xib */,
-				57360BDC14FF84F600343B7B /* MainWindow.xib */,
 				EDA7DCB31548ED3E002219BA /* ModalViewController.h */,
 				EDA7DCB41548ED3E002219BA /* ModalViewController.m */,
 				EDA7DCB51548ED3E002219BA /* ModalViewController.xib */,
