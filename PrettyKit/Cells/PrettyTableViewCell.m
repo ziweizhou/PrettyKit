@@ -82,7 +82,7 @@ typedef enum {
 
 @interface PrettyTableViewCellBackground : UIView
 
-@property (nonatomic, weak) PrettyTableViewCell *cell;
+@property (nonatomic, unsafe_unretained) PrettyTableViewCell *cell;
 @property (nonatomic, assign) CellBackgroundBehavior behavior;
 
 - (id) initWithFrame:(CGRect)frame behavior:(CellBackgroundBehavior)behavior;
