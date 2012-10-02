@@ -149,8 +149,9 @@
             if (gridCell == nil) {
                 gridCell = [[PrettyGridTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:GridCellIdentifier];
                 gridCell.tableViewBackgroundColor = tableView.backgroundColor;
+                id bGridCell = gridCell; 
                 gridCell.actionBlock = ^(NSIndexPath *indexPath, int selectedIndex) {
-                    [gridCell deselectAnimated:YES];
+                    [bGridCell deselectAnimated:YES];
                 };                
             }
             [gridCell prepareForTableView:tableView indexPath:indexPath];            
@@ -167,8 +168,9 @@
             if (gridCell == nil) {
                 gridCell = [[PrettyGridTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:GridCellIdentifier];
                 gridCell.tableViewBackgroundColor = tableView.backgroundColor;
+                id bGridCell = gridCell; 
                 gridCell.actionBlock = ^(NSIndexPath *indexPath, int selectedIndex) {
-                    [gridCell deselectAnimated:YES];
+                    [bGridCell deselectAnimated:YES];
                 };                
             }
             [gridCell prepareForTableView:tableView indexPath:indexPath];            

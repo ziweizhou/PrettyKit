@@ -131,8 +131,9 @@
             cell.gradientEndColor = end_color;  
         }
         cell.numberOfElements = 2;
+        id bCell = cell; 
         [cell setActionBlock:^(NSIndexPath *indexPath, int selectedIndex) {
-            [cell deselectAnimated:YES];
+            [bCell deselectAnimated:YES];
         }];
         [cell prepareForTableView:tableView indexPath:indexPath];
         cell.textLabel.font = [UIFont boldSystemFontOfSize:18];

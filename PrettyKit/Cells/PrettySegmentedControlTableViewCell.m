@@ -95,8 +95,9 @@
 }
 
 - (void) setActionBlock:(void (^)(NSIndexPath *indexPath, int sselectedIndex))actionBlock {
+    NSInteger *indexPtr = &selectedIndex; 
     [super setActionBlock:^(NSIndexPath *indexPath, int sselectedIndex) {
-        selectedIndex = sselectedIndex;
+        *indexPtr = sselectedIndex;
         actionBlock(indexPath, sselectedIndex);
     }];
 }
