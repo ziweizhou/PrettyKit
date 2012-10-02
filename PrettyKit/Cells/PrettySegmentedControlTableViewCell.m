@@ -100,8 +100,9 @@
 
 
 - (void) setActionBlock:(void (^)(NSIndexPath *indexPath, int sselectedIndex))actionBlock {
+    id bself = self; 
     [super setActionBlock:^(NSIndexPath *indexPath, int sselectedIndex) {
-        [self _setSelectedIndex:sselectedIndex notifySuper:NO];
+        [bself _setSelectedIndex:sselectedIndex notifySuper:NO];
         
         if (actionBlock)
         {
