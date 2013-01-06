@@ -145,6 +145,8 @@ typedef enum {
  Change this property to override the background color in plain table views. */
 @property (nonatomic, retain) UIColor *customBackgroundColor;
 
+@property (nonatomic, retain) UIImage *gradientImage;
+
 /** Specifies the background gradient start color to use. */
 @property (nonatomic, retain) UIColor *gradientStartColor;
 

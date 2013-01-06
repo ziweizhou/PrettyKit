@@ -136,6 +136,27 @@ typedef enum {
     }
 }
 
+- (void) drawGradientWithImage:(UIImage*)image inRect:(CGRect)rect type:(CellBackgroundGradient)type
+{
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSaveGState(ctx);
+    
+    CGPathRef path;
+    path = [self createRoundedPath:rect];
+    
+    CGContextAddPath(ctx, path);
+    
+    CGContextClip(ctx);
+    
+    CGContextTranslateCTM(ctx, 0, rect.size.height);
+    CGContextScaleCTM(ctx, 1.0, -1.0);
+    
+    CGContextDrawImage(ctx, rect, [image CGImage]);
+    
+    CGContextRestoreGState(ctx);
+}
+
+
 - (void) drawGradient:(CGRect)rect type:(CellBackgroundGradient)type 
 {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -166,6 +187,12 @@ typedef enum {
         [self drawGradient:rect type:CellBackgroundGradientSelected];
         return;
     }
+    
+    if(self.cell.gradientImage) {
+        [self drawGradientWithImage:self.cell.gradientImage inRect:rect type:CellBackgroundGradientNormal];
+        return;
+    }
+
     
     if (self.cell.gradientStartColor && self.cell.gradientEndColor)
     {
@@ -365,7 +392,7 @@ typedef enum {
 @synthesize position, dropsShadow, borderColor, tableViewBackgroundColor;
 @synthesize customSeparatorColor, selectionGradientStartColor, selectionGradientEndColor;
 @synthesize cornerRadius;
-@synthesize customBackgroundColor, gradientStartColor, gradientEndColor;
+@synthesize customBackgroundColor, gradientStartColor, gradientEndColor, gradientImage;
 @synthesize shadowOpacity, customSeparatorStyle;
 
 
@@ -380,6 +407,7 @@ typedef enum {
     self.customBackgroundColor = nil;
     self.gradientStartColor = nil;
     self.gradientEndColor = nil;
+    self.gradientImage = nil;
     
     [super dealloc];
 }
