@@ -59,6 +59,7 @@ typedef enum {
 
 @interface PrettyTableViewCell (Private)
 
+- (void)setupCell;
 - (float) shadowMargin;
 - (BOOL) tableViewIsGrouped;
 
@@ -398,31 +399,41 @@ typedef enum {
     self.customSeparatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-
-        [self.contentView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld context:nil];
-
-        
-        PrettyTableViewCellBackground *bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame 
-                                                                                  behavior:CellBackgroundBehaviorNormal];
-        bg.cell = self;
-        self.backgroundView = bg;
-        [bg release];
-        
-        bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
-                                                      behavior:CellBackgroundBehaviorSelected];
-        bg.cell = self;
-        self.selectedBackgroundView = bg;
-        [bg release];
-        
-        [self initializeVars];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if(self) {
+        [self setupCell];
     }
     return self;
 }
 
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setupCell];
+    }
+    return self;
+}
+
+- (void)setupCell {
+    [self.contentView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld context:nil];
+    
+    
+    PrettyTableViewCellBackground *bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
+                                                                                    behavior:CellBackgroundBehaviorNormal];
+    bg.cell = self;
+    self.backgroundView = bg;
+    [bg release];
+    
+    bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
+                                                     behavior:CellBackgroundBehaviorSelected];
+    bg.cell = self;
+    self.selectedBackgroundView = bg;
+    [bg release];
+    
+    [self initializeVars];
+}
 
 + (PrettyTableViewCellPosition) positionForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
