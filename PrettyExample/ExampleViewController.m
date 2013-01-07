@@ -181,6 +181,9 @@
             break;
     }
     
+    cell.shadowOffset = CGSizeMake(1.0, 1.0);
+    cell.shadowSize = 2;
+    
     // Configure the cell...
     [cell prepareForTableView:tableView indexPath:indexPath];
     cell.textLabel.text = @"Text";

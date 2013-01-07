@@ -264,7 +264,7 @@ typedef enum {
     CGContextSetLineWidth(ctx, 5);
 
     UIColor *shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:self.cell.shadowOpacity];
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 3, shadowColor.CGColor);
+    CGContextSetShadowWithColor(ctx, self.cell.shadowOffset, self.cell.shadowSize, shadowColor.CGColor);
 
     CGContextStrokePath(ctx);
     
@@ -296,8 +296,8 @@ typedef enum {
 
     if (shadow) {
         UIColor *shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:self.cell.shadowOpacity];
-        CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 3, shadowColor.CGColor);
-    }   
+        CGContextSetShadowWithColor(ctx, self.cell.shadowOffset, self.cell.shadowSize, shadowColor.CGColor);
+    }
     CGContextSetStrokeColorWithColor(ctx, self.cell.borderColor.CGColor);
     CGContextSetLineWidth(ctx, 2 - shadowShift);
     CGContextStrokePath(ctx);
@@ -394,7 +394,7 @@ typedef enum {
 @synthesize cornerRadius;
 @synthesize customBackgroundColor, gradientStartColor, gradientEndColor, gradientImage;
 @synthesize shadowOpacity, customSeparatorStyle;
-
+@synthesize shadowOffset, shadowSize;
 
 - (void) dealloc
 {
@@ -425,6 +425,8 @@ typedef enum {
     self.cornerRadius = default_radius;
     self.shadowOpacity = default_shadow_opacity;
     self.customSeparatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.shadowOffset = CGSizeMake(0.0, 1.0);
+    self.shadowSize = 4.0;
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
