@@ -192,7 +192,11 @@
     else {
         cell.cornerRadius = 10;
     }
-    
+
+  cell.cornerRadius = 4.0;
+  cell.shadowSize = 5.0;
+  cell.shadowOpacity = 0.5;
+  
     return cell;
 }
 

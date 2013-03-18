@@ -6,18 +6,18 @@
 
 // Copyright (c) 2012 Victor Pena Placer (@vicpenap)
 // http://www.victorpena.es/
-// 
-// 
+//
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
 // the Software, and to permit persons to whom the Software is furnished to do so,
 // subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,33 +32,33 @@
 #import "PrettyDrawing.h"
 
 #define shadow_margin           4
+#define shadow_size           4
 #define default_shadow_opacity  0.7
 
 #define contentView_margin      2
 
-#define default_radius          10
+#define default_radius          3
 
 #define default_border_color                    [UIColor colorWithHex:0xBCBCBC]
-#define default_separator_color                 [UIColor colorWithHex:0xCDCDCD] 
+#define default_separator_color                 [UIColor colorWithHex:0xCDCDCD]
 
 #define default_selection_gradient_start_color  [UIColor colorWithHex:0x0089F9]
 #define default_selection_gradient_end_color    [UIColor colorWithHex:0x0054EA]
 
 
 typedef enum {
-    CellBackgroundBehaviorNormal = 0,
-    CellBackgroundBehaviorSelected,
+  CellBackgroundBehaviorNormal = 0,
+  CellBackgroundBehaviorSelected,
 } CellBackgroundBehavior;
 
 typedef enum {
-    CellBackgroundGradientNormal = 0,
-    CellBackgroundGradientSelected,
+  CellBackgroundGradientNormal = 0,
+  CellBackgroundGradientSelected,
 } CellBackgroundGradient;
 
 
 
 @interface PrettyTableViewCell (Private)
-
 - (float) shadowMargin;
 - (BOOL) tableViewIsGrouped;
 
@@ -66,11 +66,11 @@ typedef enum {
 
 @implementation PrettyTableViewCell (Private)
 - (BOOL) tableViewIsGrouped {
-    return _tableViewStyle == UITableViewStyleGrouped;
+  return _tableViewStyle == UITableViewStyleGrouped;
 }
 
 - (float) shadowMargin {
-    return [self tableViewIsGrouped] ? shadow_margin : 0;
+  return [self tableViewIsGrouped] ? shadow_margin : 0;
 }
 
 @end
@@ -94,261 +94,260 @@ typedef enum {
 @synthesize behavior;
 
 
-- (CGPathRef) createRoundedPath:(CGRect)rect 
+- (CGPathRef) createRoundedPath:(CGRect)rect
 {
 	if (!self.cell.cornerRadius) {
 		return [UIBezierPath bezierPathWithRect:rect].CGPath;
 	}
 	
-    UIRectCorner corners;
-
-    switch (self.cell.position) {
-        case PrettyTableViewCellPositionTop:
-            corners = UIRectCornerTopLeft | UIRectCornerTopRight;
-            break;
-        case PrettyTableViewCellPositionMiddle:
-            corners = 0;
-            break;
-        case PrettyTableViewCellPositionBottom:
-            corners = UIRectCornerBottomLeft | UIRectCornerBottomRight;
-            break;
-        default:
-            corners = UIRectCornerAllCorners;
-            break;
-    }
-
-    UIBezierPath *thePath = [UIBezierPath bezierPathWithRoundedRect:rect
-                                                  byRoundingCorners:corners
-                                                        cornerRadii:CGSizeMake(self.cell.cornerRadius, self.cell.cornerRadius)];    
-    return thePath.CGPath;
+  UIRectCorner corners;
+  
+  switch (self.cell.position) {
+    case PrettyTableViewCellPositionTop:
+      corners = UIRectCornerTopLeft | UIRectCornerTopRight;
+      break;
+    case PrettyTableViewCellPositionMiddle:
+      corners = 0;
+      break;
+    case PrettyTableViewCellPositionBottom:
+      corners = UIRectCornerBottomLeft | UIRectCornerBottomRight;
+      break;
+    default:
+      corners = UIRectCornerAllCorners;
+      break;
+  }
+  
+  UIBezierPath *thePath = [UIBezierPath bezierPathWithRoundedRect:rect
+                                                byRoundingCorners:corners
+                                                      cornerRadii:CGSizeMake(self.cell.cornerRadius, self.cell.cornerRadius)];
+  return thePath.CGPath;
 }
 
 
 - (CGGradientRef) newGradientFromType:(CellBackgroundGradient)type
 {
-    switch (type) 
-    {
-        case CellBackgroundGradientSelected:
-            return [self.cell newSelectionGradient];
-        default:
-            return [self.cell newNormalGradient];
-    }
+  switch (type)
+  {
+    case CellBackgroundGradientSelected:
+      return [self.cell newSelectionGradient];
+    default:
+      return [self.cell newNormalGradient];
+  }
 }
 
-- (void) drawGradient:(CGRect)rect type:(CellBackgroundGradient)type 
+- (void) drawGradient:(CGRect)rect type:(CellBackgroundGradient)type
 {
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSaveGState(ctx);
-    
-    CGPathRef path;
-    path = [self createRoundedPath:rect];
-    
-    CGContextAddPath(ctx, path);
-        
-    CGGradientRef gradient = [self newGradientFromType:type];
-    
-    CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
-    CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-    
-    CGContextClip(ctx);
-    CGContextDrawLinearGradient(ctx, gradient, startPoint, endPoint, 0);
-    CGGradientRelease(gradient);
-    
-    CGContextRestoreGState(ctx);
+  CGContextRef ctx = UIGraphicsGetCurrentContext();
+  CGContextSaveGState(ctx);
+  
+  CGPathRef path;
+  path = [self createRoundedPath:rect];
+  
+  CGContextAddPath(ctx, path);
+  
+  CGGradientRef gradient = [self newGradientFromType:type];
+  
+  CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
+  CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+  
+  CGContextClip(ctx);
+  CGContextDrawLinearGradient(ctx, gradient, startPoint, endPoint, 0);
+  CGGradientRelease(gradient);
+  
+  CGContextRestoreGState(ctx);
 }
 
 - (void) drawBackground:(CGRect)rect
 {
-    if (self.behavior == CellBackgroundBehaviorSelected 
-        && self.cell.selectionStyle != UITableViewCellSelectionStyleNone)
-    {
-        [self drawGradient:rect type:CellBackgroundGradientSelected];
-        return;
-    }
-    
-    if (self.cell.gradientStartColor && self.cell.gradientEndColor)
-    {
-        [self drawGradient:rect type:CellBackgroundGradientNormal];
-        return;
-    }
-    
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSaveGState(ctx);
-    
-    // draws body
-    CGPathRef path;
-    path = [self createRoundedPath:rect];
-
-    CGContextAddPath(ctx, path);
-
-    CGContextSetFillColorWithColor(ctx, self.cell.backgroundColor.CGColor);
-    CGContextFillPath(ctx);
-
-    CGContextRestoreGState(ctx);
+  if (self.behavior == CellBackgroundBehaviorSelected
+      && self.cell.selectionStyle != UITableViewCellSelectionStyleNone)
+  {
+    [self drawGradient:rect type:CellBackgroundGradientSelected];
+    return;
+  }
+  
+  if (self.cell.gradientStartColor && self.cell.gradientEndColor)
+  {
+    [self drawGradient:rect type:CellBackgroundGradientNormal];
+    return;
+  }
+  
+  CGContextRef ctx = UIGraphicsGetCurrentContext();
+  CGContextSaveGState(ctx);
+  
+  // draws body
+  CGPathRef path;
+  path = [self createRoundedPath:rect];
+  
+  CGContextAddPath(ctx, path);
+  
+  CGContextSetFillColorWithColor(ctx, self.cell.backgroundColor.CGColor);
+  CGContextFillPath(ctx);
+  
+  CGContextRestoreGState(ctx);
 }
 
-- (void) drawSingleLineSeparator:(CGRect)rect 
+- (void) drawSingleLineSeparator:(CGRect)rect
 {
-    [PrettyDrawing drawLineAtHeight:CGRectGetMaxY(rect)
-                               rect:rect
-                              color:self.cell.customSeparatorColor
-                              width:1];
+  [PrettyDrawing drawLineAtHeight:CGRectGetMaxY(rect)
+                             rect:rect
+                            color:self.cell.customSeparatorColor
+                            width:1];
 }
 
 - (void) drawEtchedSeparator:(CGRect)rect
 {
-    [PrettyDrawing drawLineAtHeight:CGRectGetMaxY(rect)-1
-                               rect:rect
-                              color:self.cell.customSeparatorColor
-                              width:0.5];
-    [PrettyDrawing drawLineAtHeight:CGRectGetMaxY(rect)-0.5
-                               rect:rect
-                              color:[UIColor whiteColor] 
-                              width:1];
-
+  [PrettyDrawing drawLineAtHeight:CGRectGetMaxY(rect)-1
+                             rect:rect
+                            color:self.cell.customSeparatorColor
+                            width:0.5];
+  [PrettyDrawing drawLineAtHeight:CGRectGetMaxY(rect)-0.5
+                             rect:rect
+                            color:[UIColor whiteColor]
+                            width:1];
+  
 }
 
-- (void) drawLineSeparator:(CGRect)rect 
+- (void) drawLineSeparator:(CGRect)rect
 {
-    switch (self.cell.customSeparatorStyle) 
-    {
-        case UITableViewCellSeparatorStyleSingleLine:
-            [self drawSingleLineSeparator:rect];
-            break;
-        case UITableViewCellSeparatorStyleSingleLineEtched:
-            [self drawEtchedSeparator:rect];
-        default:
-            break;
-    }
+  switch (self.cell.customSeparatorStyle)
+  {
+    case UITableViewCellSeparatorStyleSingleLine:
+      [self drawSingleLineSeparator:rect];
+      break;
+    case UITableViewCellSeparatorStyleSingleLineEtched:
+      [self drawEtchedSeparator:rect];
+    default:
+      break;
+  }
 }
 
 - (void) fixShadow:(CGContextRef)ctx rect:(CGRect)rect
 {
-    if (self.cell.position == PrettyTableViewCellPositionTop || self.cell.position == PrettyTableViewCellPositionAlone)
-    {
-        return;
-    }
-    
-    CGContextSaveGState(ctx);
-    CGContextMoveToPoint(ctx, CGRectGetMinX(rect), CGRectGetMinY(rect));
-    CGContextAddLineToPoint(ctx, CGRectGetMaxX(rect), CGRectGetMinY(rect));
-    CGContextSetStrokeColorWithColor(ctx, self.cell.borderColor.CGColor);
-    CGContextSetLineWidth(ctx, 5);
+  if (self.cell.position == PrettyTableViewCellPositionTop || self.cell.position == PrettyTableViewCellPositionAlone)
+  {
+    return;
+  }
+  
+  CGContextSaveGState(ctx);
+  CGContextMoveToPoint(ctx, CGRectGetMinX(rect), CGRectGetMinY(rect));
+  CGContextAddLineToPoint(ctx, CGRectGetMaxX(rect), CGRectGetMinY(rect));
+  CGContextSetStrokeColorWithColor(ctx, self.cell.borderColor.CGColor);
+  CGContextSetLineWidth(ctx, 5);
+  
+  UIColor *shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:self.cell.shadowOpacity];
+  CGContextSetShadowWithColor(ctx, self.cell.shadowOffset, self.cell.shadowSize, shadowColor.CGColor);
+  CGContextStrokePath(ctx);
+  
+  CGContextRestoreGState(ctx);
+  
+}
 
+- (void) drawBorder:(CGRect)rect shadow:(BOOL)shadow
+{
+  float shadowShift = 0.5 * self.cell.dropsShadow;
+  
+  CGRect innerRect = CGRectMake(rect.origin.x+shadowShift, rect.origin.y+shadowShift,
+                                rect.size.width-shadowShift*2, rect.size.height-shadowShift*2);
+  
+  CGContextRef ctx = UIGraphicsGetCurrentContext();
+  
+  if (shadow)
+  {
+    [self fixShadow:ctx rect:innerRect];
+  }
+  
+  
+  CGContextSaveGState(ctx);
+  
+  // draws body
+  
+  CGPathRef path = [self createRoundedPath:innerRect];
+  CGContextAddPath(ctx, path);
+  
+  if (shadow) {
     UIColor *shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:self.cell.shadowOpacity];
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 3, shadowColor.CGColor);
-
-    CGContextStrokePath(ctx);
-    
-    CGContextRestoreGState(ctx);
-
+    CGContextSetShadowWithColor(ctx, self.cell.shadowOffset, self.cell.shadowSize, shadowColor.CGColor);
+  }
+  CGContextSetStrokeColorWithColor(ctx, self.cell.borderColor.CGColor);
+  CGContextSetLineWidth(ctx, 2 - shadowShift);
+  CGContextStrokePath(ctx);
+  
+  CGContextRestoreGState(ctx);
 }
 
-- (void) drawBorder:(CGRect)rect shadow:(BOOL)shadow 
+- (CGRect) innerFrame:(CGRect)frame
 {
-    float shadowShift = 0.5 * self.cell.dropsShadow;
-    
-    CGRect innerRect = CGRectMake(rect.origin.x+shadowShift, rect.origin.y+shadowShift,
-                                  rect.size.width-shadowShift*2, rect.size.height-shadowShift*2);
-    
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
-    if (shadow) 
-    {
-        [self fixShadow:ctx rect:innerRect];
-    }
-
-    
-    CGContextSaveGState(ctx);
-
-    // draws body
-    
-    CGPathRef path = [self createRoundedPath:innerRect];
-    CGContextAddPath(ctx, path);
-
-    if (shadow) {
-        UIColor *shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:self.cell.shadowOpacity];
-        CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 3, shadowColor.CGColor);
-    }   
-    CGContextSetStrokeColorWithColor(ctx, self.cell.borderColor.CGColor);
-    CGContextSetLineWidth(ctx, 2 - shadowShift);
-    CGContextStrokePath(ctx);
-    
-    CGContextRestoreGState(ctx);
-}
-
-- (CGRect) innerFrame:(CGRect)frame 
-{
-    float y = 0;
-    float h = 0;
-    
-    float shadowMargin = [self.cell shadowMargin];
-    
-    switch (self.cell.position) 
-    {
-        case PrettyTableViewCellPositionAlone:
-            h += shadowMargin;
-        case PrettyTableViewCellPositionTop:
-            y = shadowMargin;
-            h += shadowMargin;
-            break;
-        case PrettyTableViewCellPositionBottom:
-            h = shadowMargin;
-            break;
-        default:
-            break;
-    }
-    
-    return CGRectMake(frame.origin.x + shadowMargin, 
-                      frame.origin.y + y, 
-                      frame.size.width - shadowMargin*2, 
-                      frame.size.height - h);
+  float y = 0;
+  float h = 0;
+  
+  float shadowMargin = [self.cell shadowMargin];
+  
+  switch (self.cell.position)
+  {
+    case PrettyTableViewCellPositionAlone:
+      h += shadowMargin;
+    case PrettyTableViewCellPositionTop:
+      y = shadowMargin;
+      h += shadowMargin;
+      break;
+    case PrettyTableViewCellPositionBottom:
+      h = shadowMargin;
+      break;
+    default:
+      break;
+  }
+  
+  return CGRectMake(frame.origin.x + shadowMargin,
+                    frame.origin.y + y,
+                    frame.size.width - shadowMargin*2,
+                    frame.size.height - h);
 }
 
 
-- (void) drawRect:(CGRect)initialRect 
+- (void) drawRect:(CGRect)initialRect
 {
-    CGRect rect = [self innerFrame:initialRect];
-    
-    [self drawBorder:rect shadow:self.cell.dropsShadow];
-    
-    [self drawBackground:rect];
-    
-    switch (self.cell.position)
-    {
-        case PrettyTableViewCellPositionAlone:
-        case PrettyTableViewCellPositionBottom:
-            if (self.cell.tableViewIsGrouped) 
-            {
-                break;
-            }
-        default:
-            [self drawLineSeparator:CGRectMake(rect.origin.x, rect.origin.y,
-                                               rect.size.width, rect.size.height)];
-            break;
-            
-    }
+  CGRect rect = [self innerFrame:initialRect];
+  
+  [self drawBorder:rect shadow:self.cell.dropsShadow];
+  
+  [self drawBackground:rect];
+  
+  switch (self.cell.position)
+  {
+    case PrettyTableViewCellPositionAlone:
+    case PrettyTableViewCellPositionBottom:
+      if (self.cell.tableViewIsGrouped)
+      {
+        break;
+      }
+    default:
+      [self drawLineSeparator:CGRectMake(rect.origin.x, rect.origin.y,
+                                         rect.size.width, rect.size.height)];
+      break;
+      
+  }
 }
 
 
 
 
-- (void) dealloc 
+- (void) dealloc
 {
-    self.cell = nil;
-    
+  self.cell = nil;
+  
 }
 
-- (id) initWithFrame:(CGRect)frame behavior:(CellBackgroundBehavior)bbehavior 
+- (id) initWithFrame:(CGRect)frame behavior:(CellBackgroundBehavior)bbehavior
 {
-    if (self = [super initWithFrame:frame]) 
-    {
-        self.contentMode = UIViewContentModeRedraw;
-        self.behavior = bbehavior;
-        self.backgroundColor = [UIColor clearColor];
-    }
-    
-    return self;
+  if (self = [super initWithFrame:frame])
+  {
+    self.contentMode = UIViewContentModeRedraw;
+    self.behavior = bbehavior;
+    self.backgroundColor = [UIColor clearColor];
+  }
+  
+  return self;
 }
 
 
@@ -365,303 +364,304 @@ typedef enum {
 @synthesize cornerRadius;
 @synthesize customBackgroundColor, gradientStartColor, gradientEndColor;
 @synthesize shadowOpacity, customSeparatorStyle;
-
+@synthesize shadowOffset, shadowSize;
 
 - (void) dealloc
 {
-    [self.contentView removeObserver:self forKeyPath:@"frame"];
-    self.tableViewBackgroundColor = nil;
-    
+  [self.contentView removeObserver:self forKeyPath:@"frame"];
+  self.tableViewBackgroundColor = nil;
+  self.shadowOffset = CGSizeMake(0.0, 1.0);
+	self.shadowSize = 4.0;
 }
 
 - (void)initializeVars
 {
-    // default values
-    self.position = PrettyTableViewCellPositionMiddle;
-    self.dropsShadow = YES;
-    self.borderColor = default_border_color;
-    self.tableViewBackgroundColor = [UIColor clearColor];
-    self.customSeparatorColor = default_separator_color;
-    self.selectionGradientStartColor = default_selection_gradient_start_color;
-    self.selectionGradientEndColor = default_selection_gradient_end_color;
-    self.cornerRadius = default_radius;
-    self.shadowOpacity = default_shadow_opacity;
-    self.customSeparatorStyle = UITableViewCellSeparatorStyleSingleLine;
+  // default values
+  self.position = PrettyTableViewCellPositionMiddle;
+  self.dropsShadow = YES;
+  self.borderColor = default_border_color;
+  self.tableViewBackgroundColor = [UIColor clearColor];
+  self.customSeparatorColor = default_separator_color;
+  self.selectionGradientStartColor = default_selection_gradient_start_color;
+  self.selectionGradientEndColor = default_selection_gradient_end_color;
+  self.cornerRadius = default_radius;
+  self.shadowOpacity = default_shadow_opacity;
+  self.customSeparatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
 
 - (void)commonInit {
-    [self.contentView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld context:nil];
-    
-    
-    PrettyTableViewCellBackground *bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
-                                                                                    behavior:CellBackgroundBehaviorNormal];
-    bg.cell = self;
-    self.backgroundView = bg;
-    
-    bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
-                                                     behavior:CellBackgroundBehaviorSelected];
-    bg.cell = self;
-    self.selectedBackgroundView = bg;
-    
-    [self initializeVars];
+  [self.contentView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld context:nil];
+  
+  
+  PrettyTableViewCellBackground *bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
+                                                                                  behavior:CellBackgroundBehaviorNormal];
+  bg.cell = self;
+  self.backgroundView = bg;
+  
+  bg = [[PrettyTableViewCellBackground alloc] initWithFrame:self.frame
+                                                   behavior:CellBackgroundBehaviorSelected];
+  bg.cell = self;
+  self.selectedBackgroundView = bg;
+  
+  [self initializeVars];
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self commonInit];
-    }
-    return self;
+  self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+  if (self) {
+    [self commonInit];
+  }
+  return self;
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self commonInit];
-    }
-    return self;
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    [self commonInit];
+  }
+  return self;
 }
 
 
 + (PrettyTableViewCellPosition) positionForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-    
-    if ([tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section] == 1) {
-        return PrettyTableViewCellPositionAlone;
-    }
-    if (indexPath.row == 0) {
-        return PrettyTableViewCellPositionTop;
-    }
-    if (indexPath.row+1 == [tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section])
-    {
-        return PrettyTableViewCellPositionBottom;
-    }
-
-    return PrettyTableViewCellPositionMiddle;
+  
+  if ([tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section] == 1) {
+    return PrettyTableViewCellPositionAlone;
+  }
+  if (indexPath.row == 0) {
+    return PrettyTableViewCellPositionTop;
+  }
+  if (indexPath.row+1 == [tableView.dataSource tableView:tableView numberOfRowsInSection:indexPath.section])
+  {
+    return PrettyTableViewCellPositionBottom;
+  }
+  
+  return PrettyTableViewCellPositionMiddle;
 }
 
-+ (CGFloat) neededHeightForPosition:(PrettyTableViewCellPosition)position tableStyle:(UITableViewStyle)style 
++ (CGFloat) neededHeightForPosition:(PrettyTableViewCellPosition)position tableStyle:(UITableViewStyle)style
 {
-    if (style == UITableViewStylePlain)
-    {
-        return 0;
-    }
-    
-    switch (position) 
-    {
-        case PrettyTableViewCellPositionBottom:
-        case PrettyTableViewCellPositionTop:
-            return shadow_margin;
-        case PrettyTableViewCellPositionAlone:
-            return shadow_margin*2;
-        default:
-            return 0;
-    }    
+  if (style == UITableViewStylePlain)
+  {
+    return 0;
+  }
+  
+  switch (position)
+  {
+    case PrettyTableViewCellPositionBottom:
+    case PrettyTableViewCellPositionTop:
+      return shadow_margin;
+    case PrettyTableViewCellPositionAlone:
+      return shadow_margin*2;
+    default:
+      return 0;
+  }
 }
 
 + (CGFloat) tableView:(UITableView *)tableView neededHeightForIndexPath:(NSIndexPath *)indexPath
 {
-    PrettyTableViewCellPosition position = [PrettyTableViewCell positionForTableView:tableView indexPath:indexPath];
-    return [PrettyTableViewCell neededHeightForPosition:position tableStyle:tableView.style];
+  PrettyTableViewCellPosition position = [PrettyTableViewCell positionForTableView:tableView indexPath:indexPath];
+  return [PrettyTableViewCell neededHeightForPosition:position tableStyle:tableView.style];
 }
 
-- (void) prepareForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath 
+- (void) prepareForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-    _tableViewStyle = tableView.style;
-    self.position = [PrettyTableViewCell positionForTableView:tableView indexPath:indexPath];
+  _tableViewStyle = tableView.style;
+  self.position = [PrettyTableViewCell positionForTableView:tableView indexPath:indexPath];
 }
 
 // Avoids contentView's frame auto-updating. It calculates the best size, taking
 // into account the cell's margin and so.
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context 
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"frame"]) 
-    {        
-        UIView *contentView = (UIView *) object;
-        CGRect originalFrame = contentView.frame;
-
-        float shadowMargin = [self shadowMargin];
-        
-        float y = contentView_margin;
-        switch (self.position) {
-            case PrettyTableViewCellPositionTop:
-            case PrettyTableViewCellPositionAlone:
-                y += shadowMargin;
-                break;
-            default:
-                break;
-        }
-        float diffY = y - originalFrame.origin.y;
-        
-        if (diffY != 0)
-        {
-            CGRect rect = CGRectMake(originalFrame.origin.x+shadowMargin,
-                                     originalFrame.origin.y+diffY,
-                                     originalFrame.size.width - shadowMargin*2,
-                                     originalFrame.size.height- contentView_margin*2 - [PrettyTableViewCell neededHeightForPosition:self.position tableStyle:_tableViewStyle]);
-            contentView.frame = rect;
-        }
-    }
-}
-
-- (void) prepareForReuse 
-{
-    [super prepareForReuse];
-    [self.backgroundView setNeedsDisplay];
-    [self.selectedBackgroundView setNeedsDisplay];
-}
-
-- (void) setTableViewBackgroundColor:(UIColor *)aBackgroundColor 
-{
-    tableViewBackgroundColor = aBackgroundColor;
+  if ([keyPath isEqualToString:@"frame"])
+  {
+    UIView *contentView = (UIView *) object;
+    CGRect originalFrame = contentView.frame;
     
-    self.backgroundView.backgroundColor = aBackgroundColor;
-    self.selectedBackgroundView.backgroundColor = aBackgroundColor;
-}
-
-
-- (CGRect) innerFrame 
-{
-    float topMargin = 0;
-    float bottomMargin = 0;
     float shadowMargin = [self shadowMargin];
     
+    float y = contentView_margin;
     switch (self.position) {
-        case PrettyTableViewCellPositionTop:
-            topMargin = shadowMargin;
-        case PrettyTableViewCellPositionMiddle:
-            // let the separator to be painted, but separator is only painted
-            // in grouped table views
-            bottomMargin = [self tableViewIsGrouped] ? 1 : 0; 
-            break;
-        case PrettyTableViewCellPositionAlone:
-            topMargin = shadowMargin;
-            bottomMargin = shadowMargin;
-            break;
-        case PrettyTableViewCellPositionBottom:
-            bottomMargin = shadowMargin;
-            break;
-        default:
-            break;
+      case PrettyTableViewCellPositionTop:
+      case PrettyTableViewCellPositionAlone:
+        y += shadowMargin;
+        break;
+      default:
+        break;
     }
+    float diffY = y - originalFrame.origin.y;
     
-    
-    CGRect frame = CGRectMake(self.backgroundView.frame.origin.x+shadowMargin, 
-                              self.backgroundView.frame.origin.y+topMargin, 
-                              self.backgroundView.frame.size.width-shadowMargin*2,
-                              self.backgroundView.frame.size.height-topMargin-bottomMargin);
-    
-    return frame;
-}
-
-
-- (CAShapeLayer *) mask 
-{
-    UIRectCorner corners = 0;
-    
-    switch (self.position)
+    if (diffY != 0)
     {
-        case PrettyTableViewCellPositionTop:
-            corners = UIRectCornerTopLeft | UIRectCornerTopRight;
-            break;
-        case PrettyTableViewCellPositionAlone:
-            corners = UIRectCornerAllCorners;
-            break;
-        case PrettyTableViewCellPositionBottom:
-            corners = UIRectCornerBottomLeft | UIRectCornerBottomRight;
-            break;
-        default:
-            break;
+      CGRect rect = CGRectMake(originalFrame.origin.x+shadowMargin,
+                               originalFrame.origin.y+diffY,
+                               originalFrame.size.width - shadowMargin*2,
+                               originalFrame.size.height- contentView_margin*2 - [PrettyTableViewCell neededHeightForPosition:self.position tableStyle:_tableViewStyle]);
+      contentView.frame = rect;
     }
-    
-    CGRect maskRect = CGRectMake(0, 0, 
-                                 self.innerFrame.size.width, 
-                                 self.innerFrame.size.height);
-    
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:maskRect
-                                                   byRoundingCorners:corners
-                                                         cornerRadii:CGSizeMake(self.cornerRadius, self.cornerRadius)];
-    
-    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
-    maskLayer.frame = maskRect;
-    maskLayer.path = maskPath.CGPath;
-
-    return maskLayer;
+  }
 }
 
-- (BOOL) dropsShadow 
+- (void) prepareForReuse
 {
-    return dropsShadow && [self tableViewIsGrouped];
+  [super prepareForReuse];
+  [self.backgroundView setNeedsDisplay];
+  [self.selectedBackgroundView setNeedsDisplay];
+}
+
+- (void) setTableViewBackgroundColor:(UIColor *)aBackgroundColor
+{
+  tableViewBackgroundColor = aBackgroundColor;
+  
+  self.backgroundView.backgroundColor = aBackgroundColor;
+  self.selectedBackgroundView.backgroundColor = aBackgroundColor;
+}
+
+
+- (CGRect) innerFrame
+{
+  float topMargin = 0;
+  float bottomMargin = 0;
+  float shadowMargin = [self shadowMargin];
+  
+  switch (self.position) {
+    case PrettyTableViewCellPositionTop:
+      topMargin = shadowMargin;
+    case PrettyTableViewCellPositionMiddle:
+      // let the separator to be painted, but separator is only painted
+      // in grouped table views
+      bottomMargin = [self tableViewIsGrouped] ? 1 : 0;
+      break;
+    case PrettyTableViewCellPositionAlone:
+      topMargin = shadowMargin;
+      bottomMargin = shadowMargin;
+      break;
+    case PrettyTableViewCellPositionBottom:
+      bottomMargin = shadowMargin;
+      break;
+    default:
+      break;
+  }
+  
+  
+  CGRect frame = CGRectMake(self.backgroundView.frame.origin.x+shadowMargin,
+                            self.backgroundView.frame.origin.y+topMargin,
+                            self.backgroundView.frame.size.width-shadowMargin*2,
+                            self.backgroundView.frame.size.height-topMargin-bottomMargin);
+  
+  return frame;
+}
+
+
+- (CAShapeLayer *) mask
+{
+  UIRectCorner corners = 0;
+  
+  switch (self.position)
+  {
+    case PrettyTableViewCellPositionTop:
+      corners = UIRectCornerTopLeft | UIRectCornerTopRight;
+      break;
+    case PrettyTableViewCellPositionAlone:
+      corners = UIRectCornerAllCorners;
+      break;
+    case PrettyTableViewCellPositionBottom:
+      corners = UIRectCornerBottomLeft | UIRectCornerBottomRight;
+      break;
+    default:
+      break;
+  }
+  
+  CGRect maskRect = CGRectMake(0, 0,
+                               self.innerFrame.size.width,
+                               self.innerFrame.size.height);
+  
+  UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:maskRect
+                                                 byRoundingCorners:corners
+                                                       cornerRadii:CGSizeMake(self.cornerRadius, self.cornerRadius)];
+  
+  CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
+  maskLayer.frame = maskRect;
+  maskLayer.path = maskPath.CGPath;
+  
+  return maskLayer;
+}
+
+- (BOOL) dropsShadow
+{
+  return dropsShadow && [self tableViewIsGrouped];
 }
 
 - (float) cornerRadius
 {
-    return [self tableViewIsGrouped] ? cornerRadius : 0;
+  return [self tableViewIsGrouped] ? cornerRadius : 0;
 }
 
-- (UIColor *) backgroundColor 
+- (UIColor *) backgroundColor
 {
-    return customBackgroundColor ? customBackgroundColor : [super backgroundColor];
+  return customBackgroundColor ? customBackgroundColor : [super backgroundColor];
 }
 
 - (CGGradientRef) createSelectionGradient
 {
-    return [self newSelectionGradient];
+  return [self newSelectionGradient];
 }
 
 - (CGGradientRef) newSelectionGradient
 {
-    CGFloat locations[] = { 0, 1 };    
-    
-    NSArray *colors = [NSArray arrayWithObjects:(id)self.selectionGradientStartColor.CGColor, (id)self.selectionGradientEndColor.CGColor, nil];
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, 
-                                                        (__bridge CFArrayRef) colors, locations);
-    CGColorSpaceRelease(colorSpace);
-    
-    return gradient;
+  CGFloat locations[] = { 0, 1 };
+  
+  NSArray *colors = [NSArray arrayWithObjects:(id)self.selectionGradientStartColor.CGColor, (id)self.selectionGradientEndColor.CGColor, nil];
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+  CGGradientRef gradient = CGGradientCreateWithColors(colorSpace,
+                                                      (__bridge CFArrayRef) colors, locations);
+  CGColorSpaceRelease(colorSpace);
+  
+  return gradient;
 }
 
 - (CGGradientRef) createNormalGradient
 {
-    return [self newNormalGradient];
+  return [self newNormalGradient];
 }
 
 - (CGGradientRef) newNormalGradient
 {
-    CGFloat locations[] = { 0, 1 };    
-    
-    NSArray *colors = [NSArray arrayWithObjects:(id)self.gradientStartColor.CGColor, (id)self.gradientEndColor.CGColor, nil];
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, 
-                                                        (__bridge CFArrayRef) colors, locations);
-    CGColorSpaceRelease(colorSpace);
-    
-    return gradient;
+  CGFloat locations[] = { 0, 1 };
+  
+  NSArray *colors = [NSArray arrayWithObjects:(id)self.gradientStartColor.CGColor, (id)self.gradientEndColor.CGColor, nil];
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+  CGGradientRef gradient = CGGradientCreateWithColors(colorSpace,
+                                                      (__bridge CFArrayRef) colors, locations);
+  CGColorSpaceRelease(colorSpace);
+  
+  return gradient;
 }
 
 #pragma mark - Deprecated stuff
 
 - (BOOL) showsCustomSeparator
 {
-    return self.customSeparatorStyle != UITableViewCellSeparatorStyleNone;
+  return self.customSeparatorStyle != UITableViewCellSeparatorStyleNone;
 }
 
 - (void) setShowsCustomSeparator:(BOOL)showsCustomSeparator
 {
-    switch (showsCustomSeparator)
-    {
-        case YES:
-            self.customSeparatorStyle = UITableViewCellSeparatorStyleSingleLine;
-            break;
-        case NO:
-            self.customSeparatorStyle = UITableViewCellSeparatorStyleNone;
-            break;            
-    }
-    
-    
+  switch (showsCustomSeparator)
+  {
+    case YES:
+      self.customSeparatorStyle = UITableViewCellSeparatorStyleSingleLine;
+      break;
+    case NO:
+      self.customSeparatorStyle = UITableViewCellSeparatorStyleNone;
+      break;
+  }
+  
+  
 }
 
 @end
